@@ -11,6 +11,14 @@ class Statistic extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'confirmed',
+        'recovered',
+        'deaths'
+    ];
+
+
+
     public function country()
     {
         return $this->belongsTo(Country::class);
