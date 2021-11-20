@@ -9,13 +9,13 @@ Run following commands:
 composer install
 php artisan key:generate
 php artisan migrate
-// seed with exaple user and fetch countries
+// seeds DB with test user and fetchs countries
 php artisan db:seed
-// fetch statistics
+// fetchs statistics
 php artisan get:statistics
 ```
 ###### Linux
-if you are on Linux/Debian system just run in root of projects:
+if you are on Linux/Debian system just run in root of project:
 ```
 chmod 755 install.sh
 ./install.sh
