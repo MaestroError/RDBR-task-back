@@ -20,3 +20,12 @@ if you are on Linux/Debian system just run in root of project:
 chmod 755 install.sh
 ./install.sh
 ```
+
+### Run
+After installation run:
+```
+php artisan test (optional)
+php artisan serve
+// OR
+php artisan octane:start
+```
