@@ -26,7 +26,7 @@ After installation run:
 ```
 php artisan test (optional)
 php artisan serve
-// OR
+// OR (if on Linux/MacOS)
 php artisan octane:start
 ```
 
