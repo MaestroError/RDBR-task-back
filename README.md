@@ -29,3 +29,21 @@ php artisan serve
 // OR
 php artisan octane:start
 ```
+
+#### P.S.
+
+if you get this error on `composer install`:
+```
+Your lock file does not contain a compatible set of packages. Please run composer update.
+
+  Problem 1
+    - spiral/goridge is locked to version v3.1.1 and an update of this package was not requested.
+    - spiral/goridge v3.1.1 requires ext-sockets * -> it is missing from your system. Install or enable PHP's sockets extension.
+    - spiral/roadrunner-worker is locked to version v2.1.4 and an update of this package was not requested.
+    - spiral/roadrunner-worker v2.1.4 requires ext-sockets * -> it is missing from your system. Install or enable PHP's sockets extension.
+  Problem 3
+    - spiral/roadrunner-worker v2.1.4 requires ext-sockets * -> it is missing from your system. Install or enable PHP's sockets extension.
+    - spiral/roadrunner-http v2.0.4 requires spiral/roadrunner-worker ^2.0 -> satisfiable by spiral/roadrunner-worker[v2.1.4].
+    - spiral/roadrunner-http is locked to version v2.0.4 and an update of this package was not requested.
+```
+Enable 'sockets' extension from your php.ini file and run `composer update`
