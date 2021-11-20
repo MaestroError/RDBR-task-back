@@ -47,6 +47,7 @@ class getStatistics extends Command
 
         // get progressbar ready
         if(!$this->option('nobar')) {
+            $this->newLine();
             $bar = $this->output->createProgressBar(count($countries));
             $bar->start();
         }
@@ -59,6 +60,8 @@ class getStatistics extends Command
             ])->post("https://devtest.ge/get-country-statistics", [
                 "code" => $country->code
             ])->json();
+
+            $this->handleTooManyAtts($stat);
             
             // check if statistic exists
             if ($country->statistic === null) {
@@ -68,12 +71,6 @@ class getStatistics extends Command
                     $this->updateOne($country, $stat);
                 } else {
                     $this->createNew($country, $stat);
-                }
-                if(isset($stat['message'])) {
-                    $this->info(json_encode($stat));
-                    $this->newLine();
-                    $this->info("Some Error occurred: ".$stat['message']);
-                    exit;
                 }
                 
             }
@@ -93,13 +90,26 @@ class getStatistics extends Command
 
     // create new record
     protected function createNew($country, $stat) {
-        $Statistic = new Statistic($stat);
+        $Statistic = new Statistic([
+            "confirmed" => $stat["confirmed"],
+            "recovered" => $stat["recovered"],
+            "deaths" => $stat["deaths"],
+        ]);
         $country->statistic()->save($Statistic);
     }
 
     // update existing
     protected function updateOne($country, $stat) {
         $country->statistic->fill($stat)->save();
+    }
+
+    protected function handleTooManyAtts($stat) {
+        if(isset($stat['message'])) {
+            // $this->info(json_encode($stat));
+            $this->newLine();
+            $this->error("Some Error occurred: ".$stat['message']);
+            exit;
+        }
     }
 
 }
