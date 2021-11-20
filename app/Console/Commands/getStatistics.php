@@ -43,7 +43,43 @@ class getStatistics extends Command
      */
     public function handle()
     {
-        $countries = Country::with("statistic")->get();
+        $countries = Country::with("statistic")->offset(0)->limit(55)->get();
+        $countries2 = Country::with("statistic")->offset(55)->limit(100)->get();
+        
+        $this->getStats($countries);
+        $this->info("First Part Fetched, let's rest for 1 min");
+        sleep(60);
+        $this->getStats($countries2);
+        
+        $this->info('Statistics fetched successfully!');
+
+    }
+
+    // create new record
+    protected function createNew($country, $stat) {
+        $Statistic = new Statistic([
+            "confirmed" => $stat["confirmed"],
+            "recovered" => $stat["recovered"],
+            "deaths" => $stat["deaths"],
+        ]);
+        $country->statistic()->save($Statistic);
+    }
+
+    // update existing
+    protected function updateOne($country, $stat) {
+        $country->statistic->fill($stat)->save();
+    }
+
+    protected function handleTooManyAtts($stat) {
+        if(isset($stat['message'])) {
+            // $this->info(json_encode($stat));
+            $this->newLine();
+            $this->error("Some Error occurred: ".$stat['message']);
+            exit;
+        }
+    }
+
+    protected function getStats($countries) {
 
         // get progressbar ready
         if(!$this->option('nobar')) {
@@ -51,8 +87,7 @@ class getStatistics extends Command
             $bar = $this->output->createProgressBar(count($countries));
             $bar->start();
         }
-        
-        
+
         foreach ($countries as $country) {
             // get statistic
             $stat = Http::withHeaders([
@@ -84,32 +119,7 @@ class getStatistics extends Command
             $bar->finish();
             $this->newLine();
         }
-        $this->info('Statistics fetched successfully!');
 
-    }
-
-    // create new record
-    protected function createNew($country, $stat) {
-        $Statistic = new Statistic([
-            "confirmed" => $stat["confirmed"],
-            "recovered" => $stat["recovered"],
-            "deaths" => $stat["deaths"],
-        ]);
-        $country->statistic()->save($Statistic);
-    }
-
-    // update existing
-    protected function updateOne($country, $stat) {
-        $country->statistic->fill($stat)->save();
-    }
-
-    protected function handleTooManyAtts($stat) {
-        if(isset($stat['message'])) {
-            // $this->info(json_encode($stat));
-            $this->newLine();
-            $this->error("Some Error occurred: ".$stat['message']);
-            exit;
-        }
     }
 
 }
